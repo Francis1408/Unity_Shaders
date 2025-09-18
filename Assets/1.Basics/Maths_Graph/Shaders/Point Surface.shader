@@ -31,7 +31,7 @@ Shader "Custom/Point Surface"
         void ConfigureSurface (Input input, inout SurfaceOutputStandard surface) {
             
             // Sets the (R, G) as (X, Y) coordinates of the cube
-            surface.Albedo.rg = saturate(input.worldPos.xy * 0.5 + 0.5); // saturate clamps all values to 0-1 
+            surface.Albedo = saturate(input.worldPos * 0.5 + 0.5); // saturate clamps all values to 0-1 
             surface.Smoothness = _Smoothness;
 
         }

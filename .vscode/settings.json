@@ -51,5 +51,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Unity Shaders Study.sln"
+    "dotnet.defaultSolution": "Unity_Shaders.sln"
 }
