@@ -23,9 +23,42 @@ public static class FunctionLibrary
     static Function[] functions = { Wave, MultiWave, Ripple, Sphere, Torus };
 
     // Method to choose a math function based on index
+    
     public static Function GetFunction(FunctionName name)
     {
         return functions[(int)name];
+    }
+
+    // SEQUENCE
+    // Pass to the next function or return to the initial one
+    public static FunctionName GetNextFunctionName(FunctionName name)
+    {
+        if ((int)name < functions.Length - 1)
+        {
+            return name + 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    // RANDOM
+    // Get a random function number besides the one as a parameter
+    public static FunctionName GetRandomFunctionNameOtherThan(FunctionName name)
+    {
+        FunctionName choice = (FunctionName)Random.Range(1, functions.Length);
+        return choice == name ? 0 : choice;
+    }
+
+
+    public static Vector3 Morph(
+        float u, float v, float t, Function from, Function to, float progress
+    )
+    {
+        // Linear interpolation between the functions. It will prodice a straight constant-speed
+        // transition between the functions.
+        return Vector3.LerpUnclamped(from(u, v, t), to(u, v, t), SmoothStep(0f, 1f, progress));
     }
 
 
@@ -71,7 +104,7 @@ public static class FunctionLibrary
     public static Vector3 Sphere(float u, float v, float t)
     {
         // Radius
-        float r = 0.5f + 0.5f * Sin(PI * t); // Makes the radius be between 0 and 1/2
+        float r = 0.9f + 0.1f * Sin(PI * (6f * u + 4f * v + t)); // Makes the radius be between 0 and 1/2
         float s = r * Cos(0.5f * PI * v);
         Vector3 p;
 
@@ -85,8 +118,8 @@ public static class FunctionLibrary
     public static Vector3 Torus(float u, float v, float t)
     {
         
-        float r1 = 0.75f; // Outer ring 
-        float r2 = 0.25f; // Inner ring (thickness)
+        float r1 = 0.7f + 0.1f * Sin(PI * (6f * u + 0.5f * t)); // Outer ring 
+        float r2 = 0.15f + 0.05f * Sin(PI * (8f * u + 4f * v + 2f * t));// Inner ring (thickness)
         float s = r1 + r2 * Sin(PI * v); // Expand the minimum circles so they can have a 0.5 radius
         Vector3 p;
 

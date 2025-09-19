@@ -20,7 +20,7 @@ Shader "Custom/Point Surface"
 
         struct Input {
 
-            float3 worldPos; // float3 is the same as a Vector3 (float, float, float)
+            float3 worldPos : WORLDPOS; // float3 is the same as a Vector3 (float, float, float)
         };
 
         float _Smoothness;
