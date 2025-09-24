@@ -1,0 +1,48 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel FunctionKernel
+
+// Gives access to the buffer
+RWStructuredBuffer<float3> _Positions;
+
+uint _Resolution;
+
+float _Step, _Time;
+
+// Take the XY components of the identifier, add 0.5, 
+// multiply that by the step size, then subtract one.
+float2 GetUV (uint3 id) {
+    return (id.xy + 0.5) * _Step - 1.0;
+}
+
+void SetPosition (uint3 id, float3 position) {
+    // Make sure that the X and Y identifier are less the 
+    // resolution (WHich must be a multiple of 8)
+    if (id.x < _Resolution && id.y < _Resolution) {
+        // Store 2D data sequentially in a 1D array
+        _Positions[id.x + id.y * _Resolution] = position;
+    }
+}
+
+// Define PI
+#define PI 3.14159265358979323846
+
+// Define the wave function
+float3 Wave (float u, float v, float t) {
+	float3 p;
+	p.x = u;
+	p.y = sin(PI * (u + v + t));
+	p.z = v;
+	return p;
+}
+
+// Define how many threads each working group will run
+// (8, 8, 1) gives us the same amount but presented as a 2D 8×8 square grid
+[numthreads(8,8,1)]
+// Each thread is identified by a vector of three unsigned integers
+// SV_DispatchThreadID = The parameter is for the thread identifier
+void FunctionKernel (uint3 id : SV_DispatchThreadID) {
+    // Get the UV coordinates
+    float2 uv = GetUV(id);
+    // Set position as 0
+    SetPosition(id, Wave(uv.x, uv.y, _Time));
+}
