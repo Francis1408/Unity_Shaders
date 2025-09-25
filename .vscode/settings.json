@@ -51,5 +51,12 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Unity_Shaders.sln"
+    "dotnet.defaultSolution": "Unity_Shaders.sln",
+
+    //  Add this block
+    "files.associations": {
+        "*.shader": "hlsl",
+        "*.compute": "hlsl",
+        "*.cginc": "hlsl"   // optional, for Unity include files
+    }
 }

@@ -15,6 +15,9 @@ CLASS THAT MANAGES THE FUNCTION ASSIGMENT. IN THE INSPECTOR YOU CAN CHOOSE THE F
 (The transition function uses liner interpolation for a smoother transition)
 - Function Duration: How long the function stays rendered on screen
 
+
+The class instructs to the GPU to run a compute shader kernel and then tells Unity to procedually draw a
+lot of points.
 */
 
 
@@ -107,6 +110,10 @@ public class GPUGraph : MonoBehaviour
         // Decide how many groups are nedded to draw
         int groups = Mathf.CeilToInt(resolution / 8f);
         computeShader.Dispatch(kernelId, groups, groups, 1);
+
+        // Pass the values to the material shader
+        material.SetBuffer(positionsId, positionBuffer);
+        material.SetFloat(stepId, step);
 
         //Define the Frustum = The area bound where the mesh will be drawn
         // If the position of the mesh ends up to be outside the frustum, 
