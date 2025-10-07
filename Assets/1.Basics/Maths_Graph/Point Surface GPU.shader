@@ -15,7 +15,7 @@ Shader "Custom/Point Surface GPU"
         #pragma surface ConfigureSurface Standard fullforwardshadows addshadow
         // Indicates the surface shader needs to invoke a ConfigureProcedural
         #pragma instancing_options assumeuniformscaling procedural:ConfigureProcedural
-
+        #pragma editor_sync_compilation
         // Use shader model 3.0 target, to get nicer looking lighting
         // Sets a minimum for the shader's target level and quality
         #pragma target 4.5

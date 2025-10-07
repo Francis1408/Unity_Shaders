@@ -25,7 +25,7 @@ public class GPUGraph : MonoBehaviour
 {
 
     // Amount of cubes in the scene
-    [SerializeField, Range(10, 200)]
+    [SerializeField, Range(10, 1000)]
     int resolution = 10;
 
     [SerializeField]
@@ -61,7 +61,8 @@ public class GPUGraph : MonoBehaviour
         positionsId = Shader.PropertyToID("_Positions"),
         resolutionId = Shader.PropertyToID("_Resolution"),
         stepId = Shader.PropertyToID("_Step"),
-        timeId = Shader.PropertyToID("_Time");
+        timeId = Shader.PropertyToID("_Time"),
+        transitionProgressId = Shader.PropertyToID("_TransitionProgress");
 
     // Keeps the kernelId
     int kernelId;
@@ -80,10 +81,6 @@ public class GPUGraph : MonoBehaviour
         // Argument 1: Buffer size (the amount of points)
         // Argument 2: The size of each element (3D float coordinates = 3 * 4 bytes)
         positionBuffer = new ComputeBuffer(resolution * resolution, 3 * 4);
-
-        // Finds the kernel id so it can dispatch the infos
-        kernelId = computeShader.FindKernel("FunctionKernel");
-        Debug.Log("Kernel ID: " + kernelId);
     }
 
     void OnDisable()
@@ -103,13 +100,26 @@ public class GPUGraph : MonoBehaviour
         computeShader.SetFloat(stepId, step);
         computeShader.SetFloat(timeId, Time.time);
 
+        // if we're transitioning, otherwise don't bother.
+        if (transitioning)
+        {
+            computeShader.SetFloat(
+                transitionProgressId,
+                Mathf.SmoothStep(0f, 1f, duration / transitionDuration)
+            );
+        }
+
+        // Get the random num of the function that will be assigned
+        // Plus the funtion that will be transitioning
+        int kernelIndex = (int)function + (int)(transitioning ? transitionFunction : function) * 5;
+
         // Assign the buffer to the kernel
         // Argument 1 : Which kernel the buffer must be assigned
-        computeShader.SetBuffer(kernelId, positionsId, positionBuffer);
+        computeShader.SetBuffer(kernelIndex, positionsId, positionBuffer);
 
         // Decide how many groups are nedded to draw
         int groups = Mathf.CeilToInt(resolution / 8f);
-        computeShader.Dispatch(kernelId, groups, groups, 1);
+        computeShader.Dispatch(kernelIndex, groups, groups, 1);
 
         // Pass the values to the material shader
         material.SetBuffer(positionsId, positionBuffer);
