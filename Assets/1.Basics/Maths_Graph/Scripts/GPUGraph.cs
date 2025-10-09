@@ -64,8 +64,6 @@ public class GPUGraph : MonoBehaviour
         timeId = Shader.PropertyToID("_Time"),
         transitionProgressId = Shader.PropertyToID("_TransitionProgress");
 
-    // Keeps the kernelId
-    int kernelId;
     //  ####################################################
 
     // How much it keeps on each function before switching
