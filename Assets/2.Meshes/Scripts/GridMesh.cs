@@ -25,7 +25,10 @@ public class GridMesh : MonoBehaviour
         GetComponent<MeshFilter>().mesh = mesh = new Mesh();
         mesh.name = "Procedural Grid";
 
+        // Num vertices :  (#x+1)(#y+1)
         vertices = new Vector3[(xSize + 1) * (ySize + 1)];
+
+
         // Vector to map de texture
         Vector2[] uv = new Vector2[vertices.Length];
         // Adds tangents to orient the normal vector
